@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@2.1.301 semver@7.6.3
+
+      - name: Validate plugin
+        run: claude plugin validate --strict .
+
+      - name: Check version bump
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          changed_plugin_files=$(git diff --name-only "$BASE_SHA...$HEAD_SHA" | grep -v -E '^(\.github/|README\.md$|LICENSE(\.[A-Za-z]+)?$)' || true)
+          if [ -z "$changed_plugin_files" ]; then
+            echo "No plugin files changed. No version bump needed."
+            exit 0
+          fi
+
+          if ! git cat-file -e "origin/$BASE_REF:.claude-plugin/plugin.json" 2> /dev/null; then
+            echo "origin/$BASE_REF has no plugin.json yet. No version bump needed."
+            exit 0
+          fi
+
+          base_version=$(git show "origin/$BASE_REF:.claude-plugin/plugin.json" | jq -r '.version')
+          head_version=$(git show "$HEAD_SHA:.claude-plugin/plugin.json" | jq -r '.version')
+          echo "Base version (origin/$BASE_REF): $base_version"
+          echo "Head version: $head_version"
+
+          if [ "$base_version" = "$head_version" ]; then
+            echo "::error file=.claude-plugin/plugin.json::These plugin files changed, but version in .claude-plugin/plugin.json did not:"
+            echo "$changed_plugin_files"
+            exit 1
+          fi
+
+          if ! semver --include-prerelease --range ">$base_version" "$head_version" > /dev/null; then
+            echo "::error file=.claude-plugin/plugin.json::Version $head_version must be higher than $base_version."
+            exit 1
+          fi

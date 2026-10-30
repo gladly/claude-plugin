@@ -1,0 +1,10 @@
+{
+  "name": "gladly",
+  "version": "1.0.0",
+  "description": "Connect Claude to your Gladly organization.",
+  "author": {
+    "name": "Gladly"
+  },
+  "license": "Apache-2.0",
+  "keywords": ["gladly", "mcp", "customer-service", "setup"]
+}

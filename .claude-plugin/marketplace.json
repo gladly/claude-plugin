@@ -1,0 +1,14 @@
+{
+  "name": "gladly",
+  "description": "Gladly's plugin for Claude.",
+  "owner": {
+    "name": "Gladly"
+  },
+  "plugins": [
+    {
+      "name": "gladly",
+      "source": "./",
+      "description": "Connect Claude to your Gladly organization."
+    }
+  ]
+}
