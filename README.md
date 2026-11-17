@@ -66,6 +66,10 @@ Your connector address uses the first part of your Gladly address. For `acme.us-
 https://mcp.us-1.gladly.com/acme/mcp
 ```
 
+## Send feedback
+
+Run `/feedback` followed by your feedback (`/gladly:feedback` in Claude Code and Cowork), or ask Claude to send feedback to Gladly. Claude sends your words, exactly as you typed them, to the Gladly team.
+
 ## Troubleshooting
 
 | What you see | What to do |

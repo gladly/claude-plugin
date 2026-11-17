@@ -13,6 +13,6 @@ The user's feedback is the text they typed after the command, or the feedback th
    - `tool`: the Gladly tool the feedback is about, such as `get_agent`, if it's clear from this chat. Leave it out otherwise.
 3. Tell them in one sentence that it was sent, or what went wrong.
 
-If the Gladly connector or `send_connector_feedback` isn't available, say so, and suggest running `/gladly-setup` (`/gladly:gladly-setup` in Claude Code and Cowork) to connect Gladly. Don't send the feedback any other way.
+If other Gladly tools are available but `send_connector_feedback` isn't, say feedback can't be sent from here yet. If no Gladly tools are available at all, say Gladly isn't connected and suggest running `/gladly-setup` (`/gladly:gladly-setup` in Claude Code and Cowork). Either way, don't send the feedback any other way.
 
 Only send feedback the user asked to send.
